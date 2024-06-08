@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: external-secrets
+  name: connaisseur
   namespace: flux-system
 spec:
   interval: 5m0s
@@ -10,20 +10,23 @@ spec:
     tag: ${version}
   secretRef:
     name: git-clone-secret
-  url: ssh://git@github.com/IanHewlett/demo-service-external-secrets
+  url: ssh://git@github.com/IanHewlett/demo-service-connaisseur
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: external-secrets
-  namespace: kube-system
+  name: connaisseur
+  namespace: connaisseur
 spec:
+  dependsOn:
+  - name: external-secrets
+    namespace: kube-system
   interval: 5m0s
   path: ./release
   prune: true
   sourceRef:
     kind: GitRepository
-    name: external-secrets
+    name: connaisseur
     namespace: flux-system
   timeout: 2m0s
   wait: true
